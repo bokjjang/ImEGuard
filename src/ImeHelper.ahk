@@ -11,7 +11,8 @@ class ImeHelper {
         if !imeWnd
             return 0
         ; WM_IME_CONTROL=0x283, IMC_GETOPENSTATUS=0x5
-        return SendMessage(0x283, 0x5, 0, "ahk_id " imeWnd)
+        ; 4번째=Control(생략), 5번째=WinTitle
+        return SendMessage(0x283, 0x5, 0, , "ahk_id " imeWnd)
     }
 
     ; ── IME 상태 설정 ─────────────────────────────────────────────────────────
@@ -21,7 +22,7 @@ class ImeHelper {
         if !imeWnd
             return
         ; WM_IME_CONTROL=0x283, IMC_SETOPENSTATUS=0x6
-        SendMessage(0x283, 0x6, status, "ahk_id " imeWnd)
+        SendMessage(0x283, 0x6, status, , "ahk_id " imeWnd)
     }
 
     ; ── 영문 강제 전환 ────────────────────────────────────────────────────────
