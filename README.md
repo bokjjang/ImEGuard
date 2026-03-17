@@ -17,7 +17,7 @@ Windows Terminal / WSL2 / PowerShell / Warp
 
 ## 다운로드 및 실행
 
-1. [Releases](../../releases) 에서 `IMEGuard.exe` 다운로드
+1. [Releases](https://gitlab.com/myprojects0824/imeguard/-/releases) 에서 `IMEGuard.exe` 다운로드
 2. 원하는 폴더에 저장 후 더블클릭 실행
 3. AutoHotkey 설치 불필요 (단일 EXE)
 4. 최초 실행 시 시작 프로그램 등록 여부 선택
