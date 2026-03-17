@@ -1,5 +1,6 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
+#InstallKeybdHook
 
 ; ── 모듈 로드 ─────────────────────────────────────────────────────────────────
 #Include Config.ahk
