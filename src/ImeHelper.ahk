@@ -1,8 +1,11 @@
 #Requires AutoHotkey v2.0
 
 class ImeHelper {
+    ; 한/영 키 전송 시 토스트 중복 방지 플래그
+    static Suppressing := false
+
     ; ── IME 상태 확인 ─────────────────────────────────────────────────────────
-    ; ImmGetDefaultIMEWnd + SendMessage 방식 (모던 앱/터미널 포함 호환)
+    ; ImmGetDefaultIMEWnd + DllCall SendMessage 방식
     ; 반환값: 1 = 한글, 0 = 영문
     static GetStatus(hwnd := 0) {
         if !hwnd
@@ -11,29 +14,20 @@ class ImeHelper {
         if !imeWnd
             return 0
         ; WM_IME_CONTROL=0x283, IMC_GETOPENSTATUS=0x5
-        ; DllCall로 HWND 직접 전송 (AHK 창 검색 우회)
         return DllCall("SendMessage", "Ptr", imeWnd, "UInt", 0x283, "Ptr", 0x5, "Ptr", 0, "Ptr")
     }
 
-    ; ── IME 상태 설정 ─────────────────────────────────────────────────────────
-    ; status: 1 = 한글, 0 = 영문
-    static SetStatus(hwnd, status) {
-        imeWnd := DllCall("imm32\ImmGetDefaultIMEWnd", "Ptr", hwnd, "Ptr")
-        if !imeWnd
-            return
-        ; WM_IME_CONTROL=0x283, IMC_SETOPENSTATUS=0x6
-        DllCall("SendMessage", "Ptr", imeWnd, "UInt", 0x283, "Ptr", 0x6, "Ptr", status, "Ptr")
-    }
-
     ; ── 영문 강제 전환 ────────────────────────────────────────────────────────
+    ; 한글 모드일 때 실제 한/영 키(vk15)를 전송하여 전환
     ; 한글 모드였을 경우 true 반환
     static ForceEnglish() {
-        hwnd := WinGetID("A")
-        if this.GetStatus(hwnd) {
-            this.SetStatus(hwnd, 0)
-            return true
-        }
-        return false
+        if !this.GetStatus(WinGetID("A"))
+            return false
+        ; vk15(한/영 키) 전송 → ShowImeToast 중복 방지
+        this.Suppressing := true
+        Send("{vk15}")
+        this.Suppressing := false
+        return true
     }
 
     ; ── 터미널 IME 포커스 복구 ────────────────────────────────────────────────
@@ -52,14 +46,14 @@ class ImeHelper {
         WinActivate("ahk_id " dummyHwnd)
         Sleep(80)
 
-        ; 더미 창에서 한글 IME 강제 활성화
-        this.SetStatus(dummyHwnd, 1)
+        ; 더미 창에서 한글 IME 강제 활성화 후 복귀
+        this.Suppressing := true
+        Send("{vk15}")
+        this.Suppressing := false
         Sleep(80)
 
-        ; 원래 창으로 포커스 복귀
         WinActivate("ahk_id " origHwnd)
         Sleep(50)
-
         dummy.Destroy()
 
         return this.GetStatus(origHwnd)

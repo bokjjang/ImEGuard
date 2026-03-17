@@ -17,21 +17,23 @@ class Toast {
             this._gui := ""
         }
 
-        text    := imeStatus ? "한" : "EN"
+        text    := imeStatus ? "한글" : "Eng"
         bgColor := imeStatus ? "C0392B" : "1A6BBE"
+
+        static W := 110, H := 70   ; 토스트 크기
 
         mon := this._GetActiveMonitor()
 
         g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale", "IMEGuard_Toast")
         g.BackColor := bgColor
-        g.SetFont("s28 bold cFFFFFF", "Segoe UI")
-        g.Add("Text", "x0 y12 w80 h56 Center", text)
+        g.SetFont("s22 bold cFFFFFF", "Segoe UI")
+        g.Add("Text", "x0 y16 w" W " h38 Center", text)
         ; 일단 화면 밖에 배치 후 스타일 적용
-        g.Show("NA x-500 y-500 w80 h80")
+        g.Show("NA x-500 y-500 w" W " h" H)
 
         ; 둥근 모서리 (CreateRoundRectRgn)
         hRgn := DllCall("CreateRoundRectRgn",
-            "Int", 0, "Int", 0, "Int", 81, "Int", 81,
+            "Int", 0, "Int", 0, "Int", W+1, "Int", H+1,
             "Int", 18, "Int", 18, "Ptr")
         DllCall("SetWindowRgn", "Ptr", g.Hwnd, "Ptr", hRgn, "Int", true)
 
@@ -39,7 +41,7 @@ class Toast {
         WinSetExStyle("+0x80020", "ahk_id " g.Hwnd)
 
         ; 활성 모니터 하단 중앙 배치
-        x := mon.Left + (mon.Right - mon.Left - 80) // 2
+        x := mon.Left + (mon.Right - mon.Left - W) // 2
         y := mon.Bottom - 120
         g.Move(x, y)
 
@@ -48,10 +50,10 @@ class Toast {
         ; ── 페이드 인 (0.2초) ────────────────────────────────────────────────
         WinSetTransparent(0, "ahk_id " g.Hwnd)
         loop 10 {
-            WinSetTransparent(A_Index * 22, "ahk_id " g.Hwnd)
+            WinSetTransparent(A_Index * 18, "ahk_id " g.Hwnd)
             Sleep(20)
         }
-        WinSetTransparent(220, "ahk_id " g.Hwnd)
+        WinSetTransparent(180, "ahk_id " g.Hwnd)
 
         ; ── 표시 후 페이드 아웃 예약 ─────────────────────────────────────────
         fn := ObjBindMethod(Toast, "_FadeOut")
@@ -68,7 +70,7 @@ class Toast {
         loop 10 {
             if this._gui != g
                 return
-            WinSetTransparent(220 - A_Index * 22, "ahk_id " g.Hwnd)
+            WinSetTransparent(180 - A_Index * 18, "ahk_id " g.Hwnd)
             Sleep(50)
         }
         if this._gui = g {
