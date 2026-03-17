@@ -92,7 +92,7 @@ class Toast {
             }
         }
         ; fallback: 주 모니터
-        MonitorGetPrimary(&pri)
+        pri := MonitorGetPrimary()
         MonitorGet(pri, &mL, &mT, &mR, &mB)
         return {Left: mL, Top: mT, Right: mR, Bottom: mB}
     }
