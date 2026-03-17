@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 
 class Toast {
-    static _gui     := ""
+    static _gui := ""
     static _timerFn := ""
 
     ; imeStatus: 1 = 한글, 0 = 영문
@@ -17,7 +17,7 @@ class Toast {
             this._gui := ""
         }
 
-        text    := imeStatus ? "한글" : "Eng"
+        text := imeStatus ? "한글" : "Eng"
         bgColor := imeStatus ? "C0392B" : "1A6BBE"
 
         static W := 120, H := 90   ; 토스트 크기
@@ -27,13 +27,13 @@ class Toast {
         g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale", "IMEGuard_Toast")
         g.BackColor := bgColor
         g.SetFont("s22 bold cFFFFFF", "Segoe UI")
-        g.Add("Text", "x0 y24 w" W " h42 Center", text)
+        g.Add("Text", "x0 y12 w" W " h62 Center", text)
         ; 일단 화면 밖에 배치 후 스타일 적용
         g.Show("NA x-500 y-500 w" W " h" H)
 
         ; 둥근 모서리 (CreateRoundRectRgn)
         hRgn := DllCall("CreateRoundRectRgn",
-            "Int", 0, "Int", 0, "Int", W+1, "Int", H+1,
+            "Int", 0, "Int", 0, "Int", W + 1, "Int", H + 1,
             "Int", 18, "Int", 18, "Ptr")
         DllCall("SetWindowRgn", "Ptr", g.Hwnd, "Ptr", hRgn, "Int", true)
 
@@ -42,7 +42,7 @@ class Toast {
 
         ; 활성 모니터 하단 중앙 배치
         x := mon.Left + (mon.Right - mon.Left - W) // 2
-        y := mon.Bottom - 120
+        y := mon.Bottom - 220
         g.Move(x, y)
 
         this._gui := g
@@ -50,9 +50,13 @@ class Toast {
         ; ── 페이드 인 (0.2초) ────────────────────────────────────────────────
         WinSetTransparent(0, "ahk_id " g.Hwnd)
         loop 10 {
+            if this._gui != g   ; 도중에 새 토스트가 시작되면 중단
+                return
             WinSetTransparent(A_Index * 15, "ahk_id " g.Hwnd)
             Sleep(20)
         }
+        if this._gui != g
+            return
         WinSetTransparent(150, "ahk_id " g.Hwnd)
 
         ; ── 표시 후 페이드 아웃 예약 ─────────────────────────────────────────
@@ -90,12 +94,12 @@ class Toast {
             loop count {
                 MonitorGet(A_Index, &mL, &mT, &mR, &mB)
                 if (cx >= mL && cx < mR && cy >= mT && cy < mB)
-                    return {Left: mL, Top: mT, Right: mR, Bottom: mB}
+                    return { Left: mL, Top: mT, Right: mR, Bottom: mB }
             }
         }
         ; fallback: 주 모니터
         pri := MonitorGetPrimary()
         MonitorGet(pri, &mL, &mT, &mR, &mB)
-        return {Left: mL, Top: mT, Right: mR, Bottom: mB}
+        return { Left: mL, Top: mT, Right: mR, Bottom: mB }
     }
 }

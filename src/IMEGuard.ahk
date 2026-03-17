@@ -1,6 +1,9 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
+; 런타임 에러 다이얼로그 억제 (Return = 에러 무시 후 계속 실행)
+OnError((*) => "Return")
+
 ; ── 모듈 로드 ─────────────────────────────────────────────────────────────────
 #Include Config.ahk
 #Include ImeHelper.ahk
