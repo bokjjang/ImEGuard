@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 
 class Startup {
-    static _regKey  := "HKCU\Software\Microsoft\Windows\CurrentVersion\Run"
+    static _regKey := "HKCU\Software\Microsoft\Windows\CurrentVersion\Run"
     static _appName := "IMEGuard"
 
     ; 레지스트리에 시작 프로그램 등록/해제

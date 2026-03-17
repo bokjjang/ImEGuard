@@ -3,6 +3,10 @@
 class Tray {
     static Build() {
         A_IconTip := "IMEGuard"
+        ; 트레이 아이콘 설정 (스크립트: assets 폴더, EXE: 컴파일된 리소스)
+        iconPath := A_ScriptDir "\..\assets\IMEGuard.ico"
+        if FileExist(iconPath)
+            TraySetIcon(iconPath, , true)
         menu := A_TrayMenu
         menu.Delete()
 
