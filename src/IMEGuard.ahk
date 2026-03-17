@@ -1,6 +1,5 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
-#InstallKeybdHook
 
 ; ── 모듈 로드 ─────────────────────────────────────────────────────────────────
 #Include Config.ahk
@@ -26,10 +25,12 @@ Tray.Build()
 }
 
 ; 한/영 키 → 전환 후 토스트 표시
-; sc072: 한국어 키보드 한/영 키 스캔코드 (AHK v2는 vk+sc 조합 미지원)
-~sc072:: {
+; vk15 = VK_HANGUL, sc072 = 한국어 키보드 스캔코드 (둘 다 등록)
+ShowImeToast(*) {
     if !Config.ToastEnabled
         return
     Sleep(30)   ; IME 상태 반영 대기
     Toast.Show(ImeHelper.GetStatus())
 }
+~vk15::  ShowImeToast()
+~sc072:: ShowImeToast()
