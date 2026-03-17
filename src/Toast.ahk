@@ -20,14 +20,14 @@ class Toast {
         text    := imeStatus ? "한글" : "Eng"
         bgColor := imeStatus ? "C0392B" : "1A6BBE"
 
-        static W := 110, H := 70   ; 토스트 크기
+        static W := 120, H := 90   ; 토스트 크기
 
         mon := this._GetActiveMonitor()
 
         g := Gui("+AlwaysOnTop -Caption +ToolWindow -DPIScale", "IMEGuard_Toast")
         g.BackColor := bgColor
         g.SetFont("s22 bold cFFFFFF", "Segoe UI")
-        g.Add("Text", "x0 y16 w" W " h38 Center", text)
+        g.Add("Text", "x0 y24 w" W " h42 Center", text)
         ; 일단 화면 밖에 배치 후 스타일 적용
         g.Show("NA x-500 y-500 w" W " h" H)
 
@@ -50,10 +50,10 @@ class Toast {
         ; ── 페이드 인 (0.2초) ────────────────────────────────────────────────
         WinSetTransparent(0, "ahk_id " g.Hwnd)
         loop 10 {
-            WinSetTransparent(A_Index * 18, "ahk_id " g.Hwnd)
+            WinSetTransparent(A_Index * 15, "ahk_id " g.Hwnd)
             Sleep(20)
         }
-        WinSetTransparent(180, "ahk_id " g.Hwnd)
+        WinSetTransparent(150, "ahk_id " g.Hwnd)
 
         ; ── 표시 후 페이드 아웃 예약 ─────────────────────────────────────────
         fn := ObjBindMethod(Toast, "_FadeOut")
@@ -70,7 +70,7 @@ class Toast {
         loop 10 {
             if this._gui != g
                 return
-            WinSetTransparent(180 - A_Index * 18, "ahk_id " g.Hwnd)
+            WinSetTransparent(150 - A_Index * 15, "ahk_id " g.Hwnd)
             Sleep(50)
         }
         if this._gui = g {
