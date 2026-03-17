@@ -47,6 +47,13 @@ class Toast {
 
         this._gui := g
 
+        ; ── 페이드 아웃 타이머를 페이드인 전에 미리 예약 ────────────────────
+        ; (페이드인 200ms + 표시 시간) 후 실행 → 중간에 return 해도 타이머 보장
+        fn := ObjBindMethod(Toast, "_FadeOut")
+        this._timerFn := fn
+        totalMs := 200 + Round(Config.ToastDisplaySeconds * 1000)
+        SetTimer(fn, -totalMs)
+
         ; ── 페이드 인 (0.2초) ────────────────────────────────────────────────
         WinSetTransparent(0, "ahk_id " g.Hwnd)
         loop 10 {
@@ -58,11 +65,6 @@ class Toast {
         if this._gui != g
             return
         WinSetTransparent(150, "ahk_id " g.Hwnd)
-
-        ; ── 표시 후 페이드 아웃 예약 ─────────────────────────────────────────
-        fn := ObjBindMethod(Toast, "_FadeOut")
-        this._timerFn := fn
-        SetTimer(fn, -Round(Config.ToastDisplaySeconds * 1000))
     }
 
     static _FadeOut() {
