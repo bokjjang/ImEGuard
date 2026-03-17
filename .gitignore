@@ -1,3 +1,6 @@
+# Build output
+build/
+
 # AutoHotkey
 *.exe
 *.bin
@@ -12,6 +15,10 @@ logs/
 # VSCode
 .vscode/settings.json
 .vscode/launch.json
+
+# Editor backup files
+*.un~
+*~
 
 # OS
 Thumbs.db
