@@ -25,8 +25,8 @@ Tray.Build()
 }
 
 ; 한/영 키 → 전환 후 토스트 표시
-; vkF2sc072: 한국어 키보드 한/영 키 (VK=0xF2, SC=0x072)
-~vkF2sc072:: {
+; sc072: 한국어 키보드 한/영 키 스캔코드 (AHK v2는 vk+sc 조합 미지원)
+~sc072:: {
     if !Config.ToastEnabled
         return
     Sleep(30)   ; IME 상태 반영 대기
