@@ -11,6 +11,7 @@ class Tray {
         menu.Delete()
 
         menu.Add("IME 포커스 복구", (*) => this._OnRecovery())
+        menu.Add("IME 상태 반전 (Ctrl+Alt+H)", (*) => this._OnCorrect())
         menu.Add()
         menu.Add("ESC 영문 고정",    (*) => this._ToggleEsc())
         menu.Add("토스트 표시",      (*) => this._ToggleToast())
@@ -36,6 +37,12 @@ class Tray {
     ; ── 핸들러 ────────────────────────────────────────────────────────────────
     static _OnRecovery() {
         status := ImeHelper.Recovery()
+        if Config.ToastEnabled
+            Toast.Show(status)
+    }
+
+    static _OnCorrect() {
+        status := ImeHelper.CorrectState()
         if Config.ToastEnabled
             Toast.Show(status)
     }
